@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quant Strategy Toolkit — Skill Browser</title>
+<style>
+  :root{
+    --bg:#0c0f17; --panel:#141926; --panel2:#1b2230; --line:#26304a;
+    --ink:#e8ecf5; --mut:#93a0bd; --acc:#5ad6a0; --acc2:#6aa5ff; --warn:#f0b35b;
+    --A:#5ad6a0; --B:#6aa5ff; --C:#f0b35b; --D:#c98cff; --E:#ff8fa3;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(1200px 600px at 80% -10%,#16213a 0,var(--bg) 60%);
+    color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  header{padding:34px 28px 18px;max-width:1180px;margin:0 auto}
+  .eyebrow{letter-spacing:.18em;text-transform:uppercase;font-size:11px;color:var(--acc);font-weight:700}
+  h1{margin:.25em 0 .15em;font-size:30px;letter-spacing:-.5px}
+  .sub{color:var(--mut);max-width:760px}
+  .bar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:20px 0 6px}
+  #q{flex:1;min-width:240px;background:var(--panel);border:1px solid var(--line);color:var(--ink);
+    padding:12px 14px;border-radius:10px;font-size:15px;outline:none}
+  #q:focus{border-color:var(--acc2)}
+  .count{color:var(--mut);font-size:13px}
+  .cats{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 0}
+  .chip{cursor:pointer;border:1px solid var(--line);background:var(--panel);color:var(--mut);
+    padding:6px 12px;border-radius:999px;font-size:13px;font-weight:600;user-select:none}
+  .chip.on{color:var(--ink);border-color:var(--acc2);background:var(--panel2)}
+  .chip .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:7px;vertical-align:middle}
+  main{max-width:1180px;margin:0 auto;padding:14px 28px 60px}
+  .grp{margin:26px 0 10px;display:flex;align-items:center;gap:10px}
+  .grp h2{font-size:15px;margin:0;letter-spacing:.02em}
+  .grp .ln{flex:1;height:1px;background:var(--line)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px}
+  .card{background:linear-gradient(180deg,var(--panel) 0,var(--panel2) 100%);border:1px solid var(--line);
+    border-radius:14px;padding:16px 16px 14px;position:relative;transition:.15s;display:flex;flex-direction:column}
+  .card:hover{border-color:var(--acc2);transform:translateY(-2px)}
+  .card .num{position:absolute;top:12px;right:14px;color:var(--mut);font-size:12px;font-variant-numeric:tabular-nums}
+  .nm{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:15px;font-weight:700;color:var(--ink)}
+  .cat{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-top:3px}
+  .purpose{margin:9px 0 0;color:var(--ink)}
+  .when{margin:9px 0 0;color:var(--mut);font-size:13px}
+  .when b{color:var(--acc)}
+  .foot{display:flex;gap:8px;margin-top:12px;padding-top:11px;border-top:1px dashed var(--line);align-items:center}
+  .btn{cursor:pointer;border:1px solid var(--line);background:var(--panel);color:var(--mut);
+    font-size:12px;font-weight:600;padding:6px 10px;border-radius:8px}
+  .btn:hover{color:var(--ink);border-color:var(--acc)}
+  .tag{font-size:11px;color:var(--mut);border:1px solid var(--line);border-radius:6px;padding:3px 7px}
+  .legend{margin-top:18px;color:var(--mut);font-size:12.5px;border-top:1px solid var(--line);padding-top:14px}
+  .disc{margin:26px auto 0;max-width:1180px;color:var(--mut);font-size:12px;line-height:1.6;
+    background:#14110a;border:1px solid #3a2f12;border-radius:10px;padding:14px 16px}
+  .disc b{color:var(--warn)}
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);
+    background:var(--acc);color:#06281c;font-weight:700;padding:10px 16px;border-radius:10px;opacity:0;
+    transition:.2s;pointer-events:none}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  a{color:var(--acc2)}
+</style>
+</head>
+<body>
+<header>
+  <div class="eyebrow">Quant Strategy Toolkit</div>
+  <h1>25 Claude Skills for building, testing &amp; stress-testing trading strategies</h1>
+  <p class="sub">Each skill is a self-contained SOP that teaches Claude one specialized task in the
+  quant research lifecycle — from data integrity to honest reporting. Install the ones you need into
+  <code>~/.claude/skills/</code>. This browser is your map: search, filter by phase, and copy the trigger
+  phrase straight into Claude Code.</p>
+  <div class="bar">
+    <input id="q" placeholder="Search skills — e.g. 'stop loss', 'overfit', 'regime', 'survivorship'…" autofocus>
+    <span class="count" id="count"></span>
+  </div>
+  <div class="cats" id="cats"></div>
+</header>
+<main id="main"></main>
+
+<div class="disc">
+  <b>Important — read before use.</b> This toolkit teaches a <i>research and backtesting methodology</i>.
+  It is educational software, not financial advice, and it makes <b>no claim of profitability</b>. Backtest
+  results never guarantee future returns, and a clean backtest can still lose money live. Nothing here places
+  live trades or stores broker credentials — any live deployment is bring-your-own-broker and entirely at your
+  own risk. Trading involves substantial risk of loss. Consult a licensed professional before risking capital.
+</div>
+
+<div class="toast" id="toast">Copied!</div>
+
+<script>
+const CATS = {
+  A:{name:"Data Integrity & Foundations", color:"var(--A)"},
+  B:{name:"Signal & Strategy Construction", color:"var(--B)"},
+  C:{name:"Risk & Position Management", color:"var(--C)"},
+  D:{name:"Backtesting & Validation", color:"var(--D)"},
+  E:{name:"Research Discipline & Iteration", color:"var(--E)"},
+};
+const SKILLS = [
+ {n:"lookahead-audit",c:"A",p:"Audit a backtest for future-data leakage — the silent bug that fakes high returns.",w:"share backtest code and ask 'are my results real?' or 'why does this lose live?'"},
+ {n:"survivorship-check",c:"A",p:"Verify the tradable universe is point-in-time, not today's surviving winners.",w:"build or review a universe / constituent list for a backtest"},
+ {n:"point-in-time-fundamentals",c:"A",p:"Gate fundamentals on filing date, not period end, so restated numbers don't leak.",w:"wire earnings/ratios into a strategy or audit a fundamentals query"},
+ {n:"data-source-reconciler",c:"A",p:"Compare price feeds (yfinance / Alpaca / Polygon) using deltas, not absolutes.",w:"results differ across data sources or you add a new feed"},
+ {n:"regime-classifier",c:"B",p:"Classify bull / neutral / bear from price, moving averages and momentum.",w:"add market-regime awareness to a strategy"},
+ {n:"momentum-scorer",c:"B",p:"Build a relative-strength / momentum scoring framework (the structure, you bring weights).",w:"design or critique a stock-ranking signal"},
+ {n:"quality-gate",c:"B",p:"Filter a universe by fundamental quality (Buffett / Piotroski style).",w:"screen out junk before momentum scoring"},
+ {n:"sentiment-overlay",c:"B",p:"Score news sentiment keyed by publish time, cached for deterministic re-runs.",w:"add a news/sentiment signal or fix a non-deterministic one"},
+ {n:"macro-overlay",c:"B",p:"Apply macro regime tilts (spreads, yield curve) with correct release-lag gating.",w:"overlay FRED-style macro signals on a strategy"},
+ {n:"sector-concentration",c:"B",p:"Use sector/theme concentration as a deliberate forcing function.",w:"a broad universe is diluting your dominant-theme winners"},
+ {n:"regime-position-sizing",c:"C",p:"Map each regime to max allocation, position count and entry thresholds.",w:"size positions differently across bull/neutral/bear"},
+ {n:"stop-loss-designer",c:"C",p:"Design cost-basis and trailing stops that fit the strategy's volatility.",w:"add or tune stop-loss / trailing-stop logic"},
+ {n:"profit-ladder",c:"C",p:"Build a tiered profit-taking ladder that fires once per tranche.",w:"scale out of winners systematically"},
+ {n:"kelly-sizing",c:"C",p:"Half-Kelly position sizing from realized per-symbol win rates.",w:"size by edge once you have enough trade history"},
+ {n:"circuit-breaker",c:"C",p:"Pause trading on portfolio drawdown; gate correlated entries.",w:"protect against cascading losses or over-correlation"},
+ {n:"backtest-harness",c:"D",p:"Scaffold a clean walk-forward backtest loop with proper time gating.",w:"start a backtest from scratch or refactor a leaky one"},
+ {n:"walk-forward-validation",c:"D",p:"Out-of-sample / train-test discipline with time-series splits.",w:"prove a strategy isn't just fit to history"},
+ {n:"execution-realism",c:"D",p:"Add next-bar fills, slippage, fees and volume caps so fills aren't fantasy.",w:"a backtest fills at impossible prices"},
+ {n:"performance-attribution",c:"D",p:"Decompose returns by year, regime and asset to see what's actually working.",w:"understand WHERE returns come from"},
+ {n:"metrics-report",c:"D",p:"Report CAGR, MaxDD, Sharpe and win-rate — honestly, with the caveats.",w:"summarize backtest performance for review"},
+ {n:"experiment-design",c:"E",p:"Plan each change with an EV table, P(success) and cheapest-test-first ordering.",w:"deciding what strategy tweak to try next"},
+ {n:"training-log",c:"E",p:"Journal every experiment in a structured JSONL schema for an honest paper trail.",w:"track a sequence of strategy experiments"},
+ {n:"revert-discipline",c:"E",p:"Detect regressions vs. baseline and decide when to revert a change.",w:"a tweak helped one year but hurt another"},
+ {n:"strategy-brief",c:"E",p:"Generate an honest executive brief — methodology and limits, no inflated claims.",w:"document or present a strategy to others"},
+ {n:"anti-overfit",c:"E",p:"Catch curve-fitting, hindsight selection and p-hacking before they fool you.",w:"results look too good, or you've run many experiments"},
+];
+
+let activeCat = "all", query = "";
+const main = document.getElementById('main'), countEl = document.getElementById('count'),
+      catsEl = document.getElementById('cats'), toast = document.getElementById('toast');
+
+// build category chips
+let chips = `<span class="chip on" data-c="all">All <b>${SKILLS.length}</b></span>`;
+for(const k in CATS){
+  const n = SKILLS.filter(s=>s.c===k).length;
+  chips += `<span class="chip" data-c="${k}"><span class="dot" style="background:${CATS[k].color}"></span>${CATS[k].name} ${n}</span>`;
+}
+catsEl.innerHTML = chips;
+catsEl.querySelectorAll('.chip').forEach(ch=>ch.onclick=()=>{
+  activeCat = ch.dataset.c;
+  catsEl.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on', x===ch));
+  render();
+});
+document.getElementById('q').oninput = e=>{ query = e.target.value.toLowerCase().trim(); render(); };
+
+function copy(txt){
+  navigator.clipboard.writeText(txt).then(()=>{ toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'),1100); });
+}
+
+function render(){
+  const f = SKILLS.filter(s=>{
+    if(activeCat!=="all" && s.c!==activeCat) return false;
+    if(!query) return true;
+    return (s.n+" "+s.p+" "+s.w+" "+CATS[s.c].name).toLowerCase().includes(query);
+  });
+  countEl.textContent = `${f.length} of ${SKILLS.length} skills`;
+  let html = "";
+  for(const k in CATS){
+    const grp = f.filter(s=>s.c===k);
+    if(!grp.length) continue;
+    html += `<div class="grp"><span class="dot" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${CATS[k].color}"></span><h2>${CATS[k].name}</h2><span class="ln"></span><span class="count">${grp.length}</span></div><div class="grid">`;
+    for(const s of grp){
+      const idx = SKILLS.indexOf(s)+1;
+      const trigger = `Use the ${s.n} skill — `;
+      html += `<div class="card">
+        <span class="num">${String(idx).padStart(2,'0')}</span>
+        <div class="nm">${s.n}</div>
+        <div class="cat" style="color:${CATS[k].color}">${CATS[k].name}</div>
+        <div class="purpose">${s.p}</div>
+        <div class="when"><b>Use when</b> you ${s.w}.</div>
+        <div class="foot">
+          <button class="btn" onclick='copy(${JSON.stringify(trigger)})'>⧉ Copy trigger</button>
+          <span class="tag">edge-free · secret-free</span>
+        </div>
+      </div>`;
+    }
+    html += `</div>`;
+  }
+  if(!f.length) html = `<p style="color:var(--mut);margin-top:30px">No skills match "<b>${query}</b>". Try a broader term.</p>`;
+  main.innerHTML = html + `<div class="legend">Tip: in Claude Code, install a skill by copying its folder into
+    <code>~/.claude/skills/</code>, then just describe your task — the skill triggers itself. The "Copy trigger"
+    button gives you an explicit phrase if you want to force it.</div>`;
+}
+render();
+</script>
+</body>
+</html>

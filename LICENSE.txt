@@ -1,0 +1,42 @@
+Quant Strategy Toolkit — License & Disclaimer
+Copyright (c) 2026. All rights reserved.
+
+1. LICENSE GRANT
+You are granted a non-exclusive, non-transferable license to use and modify the
+contents of this package for your own personal or internal business use. You may
+adapt the skills and templates with your own context, data, and parameters.
+
+2. RESTRICTIONS
+You may not resell, redistribute, sublicense, or publicly republish this package or
+any substantial portion of it as a competing product without prior written permission.
+Using the skills to produce your own original work product is permitted and encouraged.
+
+3. NO FINANCIAL ADVICE
+This package is educational software. It does not constitute financial, investment,
+tax, legal, or trading advice, and must not be relied upon as such. The author is not a
+registered investment adviser, broker-dealer, or financial professional.
+
+4. NO GUARANTEE OF RESULTS
+No representation or warranty is made that any strategy, method, template, or skill in
+this package will be profitable or will avoid losses. Backtested, simulated, or
+hypothetical performance has inherent limitations and does NOT indicate future results.
+A strategy that passes every check in this toolkit may still lose money in live markets.
+
+5. ASSUMPTION OF RISK
+Trading and investing involve substantial risk of loss, including the total loss of
+principal. You are solely responsible for any decisions made and trades placed using
+information, code, or methods derived from this package. Any live deployment is
+bring-your-own-broker and entirely at your own risk.
+
+6. LIMITATION OF LIABILITY
+To the maximum extent permitted by law, the author shall not be liable for any direct,
+indirect, incidental, consequential, or other damages — including but not limited to
+trading losses — arising from the use of or inability to use this package.
+
+7. AS-IS
+This package is provided "AS IS", without warranty of any kind, express or implied,
+including but not limited to warranties of merchantability or fitness for a particular
+purpose.
+
+By using this package you acknowledge that you have read, understood, and agreed to
+these terms.
